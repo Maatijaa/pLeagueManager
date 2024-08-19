@@ -260,7 +260,7 @@ public class RostersCommand extends BaseCommand {
       return;
     }
 
-    getDataManager().setConfig(getPlayerData(), target.getName());
+    getDataManager().setConfig(getPlayerData(), target.getUniqueId().toString());
     Player player = (Player) sender;
 
     if (hasAccess(player) || isManager(player, team)) {

@@ -69,6 +69,11 @@ public class MigrateCommand extends BaseCommand {
         return;
       }
 
+      if (!getDataManager().configExists(playerDataFolder, oldPlayerUUID.toString())) {
+        getLogger().send(sender, Lang.ROSTERS_NOT_FOUND.getConfigValue(new String[]{"igrač"}));
+        return;
+      }
+
       String targetIP = ((Player) sender).getAddress().getAddress().getHostAddress();
       String oldNickIP = getDataManager().getConfig(oldPlayerUUID.toString()).getString("address");
       if (!targetIP.equals(oldNickIP)) {
@@ -77,11 +82,6 @@ public class MigrateCommand extends BaseCommand {
       }
 
       UUID newPlayerUUID = player.getUniqueId();
-
-      if (!getDataManager().configExists(playerDataFolder, oldPlayerUUID.toString())) {
-        getLogger().send(sender, Lang.ROSTERS_NOT_FOUND.getConfigValue(new String[]{"igrač"}));
-        return;
-      }
 
       // Copy oldNick's data to sender's data
       getDataManager().copyFile(oldPlayerUUID.toString(), newPlayerUUID.toString());

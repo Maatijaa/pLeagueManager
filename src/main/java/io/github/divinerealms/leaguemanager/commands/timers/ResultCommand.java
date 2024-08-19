@@ -88,11 +88,13 @@ public class ResultCommand extends BaseCommand {
       secondHalf().getAfterTimer().run();
       Bukkit.getScheduler().cancelTasks(getPlugin());
       reset();
-      Location spawn = new Location(sender.getServer().getWorld("world"), -8374.500, 9.00, -6040.500);
-      Player player = (Player) sender;
-      player.teleport(spawn);
-      Bukkit.dispatchCommand(player, "setspawn");
-      getPlugin().getServer().getScheduler().runTaskLater(getPlugin(), () -> Bukkit.dispatchCommand(player, "back"), 10L);
+      if (config.get("spawn") != null && sender instanceof Player) {
+        Location spawn = (Location) config.get("spawn");
+        Player player = (Player) sender;
+        player.teleport(spawn);
+        Bukkit.dispatchCommand(player, "setspawn");
+        getPlugin().getServer().getScheduler().runTaskLater(getPlugin(), () -> Bukkit.dispatchCommand(player, "back"), 10L);
+      } else getLogger().send(sender, Lang.ROSTERS_NOT_FOUND.getConfigValue(new String[]{"spawn"}));
     } else getLogger().send(sender, Lang.TIMER_NOT_AVAILABLE.getConfigValue(null));
   }
 
@@ -369,7 +371,10 @@ public class ResultCommand extends BaseCommand {
                 HOME_NAME + ".win-video" : away_result > home_result ?
                 AWAY_NAME + ".win-video" : null));
             try {
-              webhook.execute();
+              if (getDataManager().getConfig("main").getString(HOME_NAME + ".win-video") != null &&
+                  getDataManager().getConfig("main").getString(AWAY_NAME + ".win-video") != null) {
+                webhook.execute();
+              } else getLogger().send("hoster", Lang.ROSTERS_NOT_FOUND.getConfigValue(new String[]{"win video"}));
             } catch (IOException e) {
               getLogger().send("hoster", e.getMessage());
             }

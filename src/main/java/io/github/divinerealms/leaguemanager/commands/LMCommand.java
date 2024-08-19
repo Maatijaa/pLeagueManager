@@ -72,6 +72,23 @@ public class LMCommand extends BaseCommand {
     getLogger().send(sender, Lang.RELOAD.getConfigValue(null));
   }
 
+  @Subcommand("setspawn")
+  @CommandPermission("leaguemanager.command.setspawn")
+  public void onSetSpawn(CommandSender sender) {
+    if (sender instanceof Player) {
+      Player player = (Player) sender;
+      YamlConfiguration config = Config.getConfig("config.yml");
+      Location location = player.getLocation();
+
+      config.set("spawn", location);
+      Config.saveConfig(config, "config.yml");
+
+      getLogger().send(player, Lang.PRACTICE_AREA_SET.getConfigValue(new String[]{"spawn", String.valueOf(location.getX()), String.valueOf(location.getY()), String.valueOf(location.getZ())}));
+    } else {
+      getLogger().send(sender, Lang.INGAME_ONLY.getConfigValue(null));
+    }
+  }
+
   @Subcommand("toggle")
   @CommandPermission("leaguemanager.command.toggle")
   public void onToggle(CommandSender sender) {
