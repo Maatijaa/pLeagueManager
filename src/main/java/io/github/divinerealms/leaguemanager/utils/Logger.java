@@ -1,5 +1,6 @@
 package io.github.divinerealms.leaguemanager.utils;
 
+import io.github.divinerealms.leaguemanager.configs.Lang;
 import lombok.Getter;
 import org.bukkit.Server;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
@@ -35,8 +36,7 @@ public class Logger {
 
   public void info(String message) {
     message = ChatColor.translateAlternateColorCodes('&', message);
-    String prefix = ChatColor.translateAlternateColorCodes('&', "&2[&dLeague&6Manager&2] &r");
-    getConsoleSender().sendMessage(prefix + message);
+    getConsoleSender().sendMessage(Lang.PREFIX_CONSOLE.getConfigValue(null) + message);
   }
 
   public void send(final String rank, final String message) {

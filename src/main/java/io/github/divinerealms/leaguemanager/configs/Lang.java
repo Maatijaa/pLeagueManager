@@ -11,6 +11,7 @@ public enum Lang {
   PREFIX_SUCCESS("prefix.success", "&a▎ &f"),
   PREFIX_INFO("prefix.info", "{prefix_info} &f"),
   PREFIX_WARN("prefix.warn", "&6▎ &e"),
+  PREFIX_CONSOLE("prefix.console", "&2[&dLeague&6Manager&2] &r"),
   ON("on", "&a&luključen"),
   OFF("off", "&c&lisključen"),
   RELOAD("reload", "{prefix_success}Plugin osvežen!"),
