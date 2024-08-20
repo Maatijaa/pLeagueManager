@@ -12,9 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.util.FileUtil;
 
-import java.io.File;
 import java.util.UUID;
 
 @Getter
@@ -38,15 +36,7 @@ public class PlayerJoinListener implements Listener {
     UUID playerUUID = player.getUniqueId();
 
     if (!getDataManager().configExists(folderName, playerUUID.toString())) {
-      if (getDataManager().configExists("playerdataold", playerName)) {
-        File oldFile = new File(getUtilManager().getPlugin().getDataFolder() + File.separator + "playerdataold", playerName + ".yml");
-        File newFile = new File(getUtilManager().getPlugin().getDataFolder() + File.separator + folderName, playerUUID + ".yml");
-        FileUtil.copy(oldFile, newFile);
-        getLogger().info("Migrated playerdata file for &b" + playerName + " (&o" + playerUUID + "&b)");
-        return;
-      } else {
-        getDataManager().createNewFile(playerUUID.toString(), null);
-      }
+      getDataManager().createNewFile(playerUUID.toString(), null);
       getLogger().info("Creating playerdata file for &b" + playerName + " (&o" + playerUUID + "&b)");
     }
 
@@ -65,10 +55,10 @@ public class PlayerJoinListener implements Listener {
     String[] stats = new String[]{"goals","assists","yellow-cards","red-cards","clean-sheets"};
     for (String each : stats) {
       if (!getDataManager().getConfig(playerUUID.toString()).contains(each)) {
-        getLogger().info("Setting " + each + " for player " + playerName);
         getDataManager().getConfig(playerUUID.toString()).set(each, 0);
       }
     }
+    getLogger().info("Adding default stats entries for player " + playerName);
 
     if (!player.hasPermission("leaguemanager.banned") && getDataManager().getConfig(playerUUID.toString()).get("ban") != null) {
       getLogger().info("Removing ban strings from player's " + playerName + " config.");
