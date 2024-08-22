@@ -69,7 +69,8 @@ public class RostersGUI extends InventoryGUI {
     getDataManager().setConfig(getTeamData(), configType);
 
     for (String teamName : getDataManager().getConfig(configType).getKeys(false)) {
-      if ((configType.equals("main") && getHelper().groupHasMeta(teamName, "team")) ||
+      if (!getHelper().groupExists(teamName)) return;
+      else if ((configType.equals("main") && getHelper().groupHasMeta(teamName, "team")) ||
           (configType.equals("juniors") && getHelper().groupHasMeta(teamName, "b"))) {
 
         int teamSize = getDataManager().getConfig(configType).get(teamName + ".players") != null ? getDataManager().getConfig(configType).getStringList(teamName + ".players").size() : 0;

@@ -25,7 +25,7 @@ public class UtilManager {
   public UtilManager(Plugin plugin) {
     this.plugin = plugin;
     this.logger = new Logger(plugin);
-    this.helper = new Helper(plugin);
+    this.helper = new Helper(this);
     this.cubeCleaner = new CubeCleaner(this);
 
     getPlugin().getServer().getScheduler().runTaskTimer(getPlugin(), () -> {

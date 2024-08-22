@@ -285,7 +285,7 @@ public class RostersCommand extends BaseCommand {
   @CommandCompletion("@players|name|tag|country|number|position|contract")
   @CommandPermission("leaguemanager.command.rosters.set")
   public void onSet(CommandSender sender, String[] args) {
-    if (args.length < 1) {
+    if (args.length < 1 || args.length > 3) {
       getLogger().send(sender, Lang.ROSTERS_SET_USAGE.getConfigValue(null));
       return;
     }
@@ -312,7 +312,7 @@ public class RostersCommand extends BaseCommand {
         return;
       }
 
-      if (!args[1].equalsIgnoreCase("name") && args.length > 3) {
+      if (!args[1].equalsIgnoreCase("name")) {
         getLogger().send(sender, Lang.ROSTERS_SET_USAGE.getConfigValue(null));
         return;
       }
@@ -348,7 +348,7 @@ public class RostersCommand extends BaseCommand {
       Player player = (Player) sender;
 
       if (hasAccess(player) || isManager(player, team)) {
-        if (!args[1].equalsIgnoreCase("position") && args.length > 3) {
+        if (!args[1].equalsIgnoreCase("position")) {
           getLogger().send(sender, Lang.ROSTERS_SET_USAGE.getConfigValue(null));
           return;
         }
@@ -386,7 +386,7 @@ public class RostersCommand extends BaseCommand {
       return;
     }
 
-    String team = args[0].toLowerCase();
+    String team = args[0].toUpperCase();
     if (!getHelper().groupExists(team)) {
       getLogger().send(player, Lang.ROSTERS_NOT_FOUND.getConfigValue(new String[]{"tim"}));
       return;

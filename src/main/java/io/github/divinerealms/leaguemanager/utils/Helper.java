@@ -1,6 +1,7 @@
 package io.github.divinerealms.leaguemanager.utils;
 
 import io.github.divinerealms.leaguemanager.LeagueManager;
+import io.github.divinerealms.leaguemanager.managers.UtilManager;
 import lombok.Getter;
 import lombok.Setter;
 import net.luckperms.api.LuckPerms;
@@ -24,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
 @Getter
 public class Helper {
   private final Plugin plugin;
+  private final Logger logger;
   private final UserManager userManager;
   private final GroupManager groupManager;
   private final String[] permissions = new String[]{"chatcontrol.channel.%team%",
@@ -38,8 +40,9 @@ public class Helper {
   @Setter
   private LuckPerms luckPermsAPI;
 
-  public Helper(Plugin plugin) {
-    this.plugin = plugin;
+  public Helper(UtilManager utilManager) {
+    this.plugin = utilManager.getPlugin();
+    this.logger = utilManager.getLogger();
     this.luckPermsAPI = LeagueManager.getInstance().getLuckPermsAPI();
     this.userManager = getLuckPermsAPI().getUserManager();
     this.groupManager = getLuckPermsAPI().getGroupManager();
@@ -53,8 +56,11 @@ public class Helper {
   public Duration getPermissionExpireTime(UUID uniqueId, String permission) {
     User user = getPlayer(uniqueId);
     Node node = user.getCachedData().getPermissionData().queryPermission(permission).node();
-    assert node != null;
-    return node.getExpiryDuration();
+    if (node == null) {
+      return Duration.ZERO;
+    } else {
+      return node.getExpiryDuration();
+    }
   }
 
   public boolean playerInGroup(UUID uniqueId, String groupName) {
