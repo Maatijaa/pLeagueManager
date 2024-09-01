@@ -59,6 +59,11 @@ public class RostersCommand extends BaseCommand {
     } else if (args.length == 1) {
       String teamName = args[0].toUpperCase();
 
+      if (teamName.length() != 3) {
+        getLogger().send(player, Lang.UNKNOWN_COMMAND.getConfigValue(null));
+        return;
+      }
+
       if (!getHelper().groupExists(teamName.toLowerCase())) {
         getLogger().send(player, Lang.ROSTERS_NOT_FOUND.getConfigValue(new String[]{"tim"}));
         return;
@@ -81,7 +86,7 @@ public class RostersCommand extends BaseCommand {
   @CommandPermission("leaguemanager.command.rosters.create")
   public void onCreate(CommandSender sender, String[] args) {
     if (!(args.length >= 2 && args.length <= 3)) {
-      getLogger().send(sender, Lang.UNKNOWN_COMMAND.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rt create &2<&atim&2> <&atag&2> &3[&bb&3]"}));
       return;
     }
 
@@ -142,7 +147,7 @@ public class RostersCommand extends BaseCommand {
   @CommandPermission("leaguemanager.command.rosters.delete")
   public void onDelete(CommandSender sender, String[] args) {
     if (args.length != 1) {
-      getLogger().send(sender, Lang.UNKNOWN_COMMAND.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rt delete &2<&atim&2>"}));
       return;
     }
 
@@ -244,7 +249,7 @@ public class RostersCommand extends BaseCommand {
   @CommandPermission("leaguemanager.command.rosters.remove")
   public void onRemove(CommandSender sender, String[] args) {
     if (args.length < 2) {
-      getLogger().send(sender, Lang.UNKNOWN_COMMAND.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rt remove &2<&atim&2> <&aigrač&2>"}));
       return;
     }
 
@@ -382,7 +387,7 @@ public class RostersCommand extends BaseCommand {
   @CommandPermission("leaguemanager.command.rosters.createbanner")
   public void onCreateBanner(Player player, String[] args) {
     if (args.length != 1) {
-      getLogger().send(player, Lang.UNKNOWN_COMMAND.getConfigValue(null));
+      getLogger().send(player, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rt createbanner &2<&atim&2>"}));
       return;
     }
 

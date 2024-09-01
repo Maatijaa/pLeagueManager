@@ -28,13 +28,13 @@ public class PlayerQuitListener implements Listener {
     getDataManager().setConfig("playerdata", player.getUniqueId().toString());
 
     if (getDataManager().getConfig(player.getUniqueId().toString()).get("address") == null) {
-      getLogger().info("Setting IP Address for player " + playerName);
+      getLogger().info("Setting IP Address for player &b" + playerName + " &7(&o" + playerAddress + "&7)");
       getDataManager().getConfig(player.getUniqueId().toString()).set("address", playerAddress);
       getDataManager().saveConfig(player.getUniqueId().toString());
     }
 
     if (!getDataManager().getConfig(player.getUniqueId().toString()).get("address").equals(playerAddress)) {
-      getLogger().info("Updating IP Address for player " + playerName + " (new IP: " + playerAddress + ").");
+      getLogger().info("Updating IP Address for player &b" + playerName + " &7(&onew IP: &e&o" + playerAddress + "&7)");
       getDataManager().getConfig(player.getUniqueId().toString()).set("address", playerAddress);
       getDataManager().saveConfig(player.getUniqueId().toString());
     }

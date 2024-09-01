@@ -59,10 +59,10 @@ public class LMCommand extends BaseCommand {
     getLogger().send(sender, Lang.UNKNOWN_COMMAND.getConfigValue(null));
   }
 
-  @HelpCommand
+  @Subcommand("help")
   @CommandPermission("leaguemanager.command.help")
   public void onHelp(CommandSender sender, CommandHelp help) {
-    help.showHelp();
+    getLogger().send(sender, Lang.HELP.getConfigValue(null));
   }
 
   @Subcommand("reload")
@@ -117,7 +117,7 @@ public class LMCommand extends BaseCommand {
     Player player = (Player) sender;
 
     if (args.length < 1) {
-      getLogger().send(player, Lang.CLEARED_CUBES_USAGE.getConfigValue(null));
+      getLogger().send(player, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm spa &2<&anaziv&2>"}));
     } else {
       YamlConfiguration config = Config.getConfig("config.yml");
       String locName = args[0];
@@ -135,7 +135,7 @@ public class LMCommand extends BaseCommand {
   @CommandPermission("leaguemanager.command.ban")
   public void onBan(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.USER_USAGE_BAN.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm ban &2<&aigrač&2> <&atrajanje&2> &3[&brazlog&3]"}));
     } else if (args.length >= 2) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
@@ -176,7 +176,7 @@ public class LMCommand extends BaseCommand {
         getLogger().send(sender, Lang.USER_NOT_FOUND.getConfigValue(null));
       }
     } else {
-      getLogger().send(sender, Lang.USER_USAGE_BAN.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm ban &2<&aigrač&2> <&atrajanje&2> &3[&brazlog&3]"}));
     }
   }
 
@@ -185,7 +185,7 @@ public class LMCommand extends BaseCommand {
   @CommandPermission("leaguemanager.command.unban")
   public void onUnban(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.USER_USAGE_UNBAN.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm unban &2<&aigrač&2>"}));
     } else if (args.length == 1) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
@@ -223,7 +223,7 @@ public class LMCommand extends BaseCommand {
   @CommandPermission("leaguemanager.command.checkban")
   public void onCheckBan(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.USER_USAGE_CHECKBAN.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm checkban &2<&aigrač&2>"}));
     } else if (args.length == 1) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
@@ -257,7 +257,7 @@ public class LMCommand extends BaseCommand {
   @CommandPermission("leaguemanager.command.suspend")
   public void onSuspend(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.USER_USAGE_SUSPEND.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm suspend &2<&aigrač&2> <&aduration&2> &3[&breason&3]"}));
     } else if (args.length >= 2) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
@@ -297,7 +297,7 @@ public class LMCommand extends BaseCommand {
         getLogger().send(sender, Lang.USER_NOT_FOUND.getConfigValue(null));
       }
     } else {
-      getLogger().send(sender, Lang.USER_USAGE_SUSPEND.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm suspend &2<&aigrač&2> <&aduration&2> &3[&breason&3]"}));
     }
   }
 
@@ -306,7 +306,7 @@ public class LMCommand extends BaseCommand {
   @CommandPermission("leaguemanager.command.unsuspend")
   public void onUnSuspend(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.USER_USAGE_UNSUSPEND.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm unsuspend &2<&aigrač&2>"}));
     } else if (args.length == 1) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
@@ -344,7 +344,7 @@ public class LMCommand extends BaseCommand {
   @CommandPermission("leaguemanager.command.checksuspend")
   public void onCheckSuspend(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.USER_USAGE_CHECKSUSPEND.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm checksuspend &2<&aigrač&2>"}));
     } else if (args.length == 1) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 

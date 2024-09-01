@@ -48,31 +48,32 @@ public class PlayerJoinListener implements Listener {
       SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
       skullMeta.setOwner(player.getName());
       skull.setItemMeta(skullMeta);
-      getLogger().info("Setting head for player " + playerName);
+      getLogger().info("Setting head for player &b" + playerName);
       getDataManager().getConfig(playerUUID.toString()).set("head", skull);
     }
 
-    String[] stats = new String[]{"goals","assists","yellow-cards","red-cards","clean-sheets"};
-    for (String each : stats) {
-      if (!getDataManager().getConfig(playerUUID.toString()).contains(each)) {
-        getDataManager().getConfig(playerUUID.toString()).set(each, 0);
+    if (!getDataManager().getConfig(playerUUID.toString()).contains("league-stats")) {
+      String[] type = new String[]{"goals","assists","yellow-cards","red-cards","clean-sheets"};
+      for (String each : type) {
+        getDataManager().getConfig(playerUUID.toString()).set("league-stats." + each, 0);
       }
+      getLogger().info("Adding default league stats entries for player &b" + playerName);
     }
-    getLogger().info("Adding default stats entries for player " + playerName);
 
     if (!player.hasPermission("leaguemanager.banned") && getDataManager().getConfig(playerUUID.toString()).get("ban") != null) {
-      getLogger().info("Removing ban strings from player's " + playerName + " config.");
+      getLogger().info("Removing ban strings from player's &b" + playerName + " &fconfig.");
       getDataManager().getConfig(playerUUID.toString()).set("ban", null);
     }
 
     if (!player.hasPermission("group.suspend") && getDataManager().getConfig(playerUUID.toString()).get("suspend") != null) {
-      getLogger().info("Removing suspend strings from player's " + playerName + " config.");
+      getLogger().info("Removing suspend strings from player's &b" + playerName + " &fconfig.");
       getDataManager().getConfig(playerUUID.toString()).set("suspend", null);
     }
 
     if (getDataManager().getPlayerName(playerUUID) == null) {
       getDataManager().addPlayerUUID(playerUUID, playerName);
     }
+
     getDataManager().saveConfig(playerUUID.toString());
   }
 }

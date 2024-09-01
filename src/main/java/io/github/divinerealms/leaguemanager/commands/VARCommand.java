@@ -43,7 +43,7 @@ public class VARCommand extends BaseCommand {
   @CommandPermission("leaguemanager.command.var.add")
   public void onAdd(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.VAR_USAGE_ADD.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"var add &2<&aigrač&2>"}));
     } else if (args.length == 2) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
@@ -69,7 +69,7 @@ public class VARCommand extends BaseCommand {
   @CommandPermission("leaguemanager.command.var.remove")
   public void onRemove(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.VAR_USAGE_REMOVE.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"var remove &2<&aigrač&2>"}));
     } else if (args.length == 2) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 

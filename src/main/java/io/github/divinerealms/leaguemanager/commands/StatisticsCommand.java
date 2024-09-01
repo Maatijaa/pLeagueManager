@@ -95,7 +95,7 @@ public class StatisticsCommand extends BaseCommand {
   @CommandCompletion("@players|goals|assists|yellow-cards|red-cards|clean-sheets")
   public void onAdd(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.STATISTICS_USAGE_ADD.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"stats add &2<&aigrač&2> <&avrsta&2> <&aiznos&2>"}));
     } else if (args.length == 3) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
@@ -135,7 +135,7 @@ public class StatisticsCommand extends BaseCommand {
   @CommandCompletion("@players|goals|assists|yellow-cards|red-cards|clean-sheets")
   public void onRemove(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.STATISTICS_USAGE_REMOVE.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"stats remove &2<&aigrač&2> <&avrsta&2> <&aiznos&2>"}));
     } else if (args.length == 3) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
@@ -175,7 +175,7 @@ public class StatisticsCommand extends BaseCommand {
   @CommandCompletion("@players|goals|assists|yellow-cards|red-cards|clean-sheets")
   public void onSet(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.STATISTICS_USAGE_SET.getConfigValue(null));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"stats set &2<&aigrač&2> <&avrsta&2> <&aiznos&2>"}));
     } else if (args.length == 3) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
