@@ -62,7 +62,7 @@ public class ResultCommand extends BaseCommand {
 
   @Subcommand("coinflip|cf")
   @CommandPermission("leaguemanager.command.coinflip")
-  @CommandCompletion("home|away|heads|tails")
+  @CommandCompletion("heads|tails")
   public void onCoinFlip(CommandSender sender, String[] args) {
     if (!(sender instanceof Player)) {
       getLogger().send(sender, Lang.INGAME_ONLY.getConfigValue(null));
@@ -70,38 +70,15 @@ public class ResultCommand extends BaseCommand {
       if (!getUtilManager().isTaskQueued(getTimerId()) && isSetup() && !Timer.isRunning()) {
         if (args.length < 1) {
           getLogger().broadcast(Lang.RESULT_COINFLIP_MESSAGE.getConfigValue(new String[]{home, away}));
-        } else if (args.length == 2) {
-          String value = args[1].equalsIgnoreCase("heads") ? args[1] :
-              args[1].equalsIgnoreCase("tails") ? args[1] : null,
-              homeValue = null, awayValue, winner;
-
-          if (value == null) {
-            getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rs cf &2<&ahome&2|&aaway&2> <&aheads&2|&atails&2>"}));
-            return;
-          }
-
-          if (args[0].equalsIgnoreCase("home")) {
-            homeValue = value;
-            getLogger().send(sender, Lang.RESULT_COINFLIP_SET.getConfigValue(new String[]{homeValue, home}));
-          }
-
-          if (args[0].equalsIgnoreCase("away")) {
-            awayValue = value;
-            getLogger().send(sender, Lang.RESULT_COINFLIP_SET.getConfigValue(new String[]{awayValue, away}));
-          }
-
+        } else if (args.length == 1 && (args[0].equalsIgnoreCase("heads") || args[0].equalsIgnoreCase("tails"))) {
+          getLogger().send(sender, Lang.RESULT_COINFLIP_SET.getConfigValue(new String[]{args[0], home}));
           double flippy = Math.random() > 0.5 ? 1 : 2;
-          if (flippy == 1) {
-            winner = "heads";
-          } else {
-            winner = "tails";
-          }
-
-          getLogger().broadcast(Lang.RESULT_COINFLIP_WINNER.getConfigValue(new String[]{winner, homeValue != null && homeValue.equalsIgnoreCase(winner) ? home : away}));
-        } else getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rs cf &2<&ahome&2|&aaway&2> <&aheads&2|&atails&2>"}));
+          getLogger().broadcast(Lang.RESULT_COINFLIP_WINNER.getConfigValue(new String[]{flippy == 1 ? "heads" : "tails", flippy == 1 ? home : away}));
+        } else getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rs cf &2<&aheads&2|&atails&2>"}));
       } else getLogger().send(sender, Lang.TIMER_ALREADY_RUNNING.getConfigValue(null));
     }
   }
+
   @Subcommand("start|s")
   @CommandPermission("leaguemanager.command.result.start")
   public void onStart(CommandSender sender) {
