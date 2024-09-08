@@ -228,6 +228,7 @@ public enum Lang {
       "&r &r",
       "&7 &oSve komande imaju [TAB] completion, koristite ovo za pomoć!",
       "&7▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬&r")),
+  RESULT_NOT_SETUP("result.not-setup", "{prefix_error}Niste podesili prefix ili timove..."),
   RESULT_ADD("result.add", String.join(System.lineSeparator(),
       "&6▎ &r",
       "&6▎ &e  &lGOOOOOOOOOOOOL!",

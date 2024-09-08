@@ -19,6 +19,8 @@ import org.bukkit.plugin.Plugin;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @CommandAlias("result|rs")
@@ -32,9 +34,11 @@ public class ResultCommand extends BaseCommand {
   private String home, away, prefix, cleanPrefix;
   private int home_result, away_result, extraTimeNew, timerId;
   private static String HOME_NAME, AWAY_NAME;
-  private boolean secondHalf = false, league = false;
+  private boolean secondHalf = false, league = false, noTpAll = false;
   private static YamlConfiguration config;
   private DiscordWebhook webhook = null;
+  private final List<DiscordWebhook.EmbedObject> embedObjects = new ArrayList<>();
+  private final List<String> webhookMessages = new ArrayList<>();
   private String matchTime = null;
   private final DataManager dataManager;
 
@@ -75,14 +79,18 @@ public class ResultCommand extends BaseCommand {
           double flippy = Math.random() > 0.5 ? 1 : 2;
           getLogger().broadcast(Lang.RESULT_COINFLIP_WINNER.getConfigValue(new String[]{flippy == 1 ? "heads" : "tails", flippy == 1 ? home : away}));
         } else getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rs cf &2<&aheads&2|&atails&2>"}));
-      } else getLogger().send(sender, Lang.TIMER_ALREADY_RUNNING.getConfigValue(null));
+      } else getLogger().send(sender, Lang.TIMER_NOT_AVAILABLE.getConfigValue(null));
     }
   }
 
   @Subcommand("start|s")
   @CommandPermission("leaguemanager.command.result.start")
   public void onStart(CommandSender sender) {
-    if (!getUtilManager().isTaskQueued(getTimerId()) && isSetup() && !Timer.isRunning()) {
+    if (!isSetup()) {
+      getLogger().send(sender, Lang.RESULT_NOT_SETUP.getConfigValue(null));
+      return;
+    }
+    if (!getUtilManager().isTaskQueued(getTimerId())&& !Timer.isRunning()) {
       timerId = firstHalf().startTask();
       Timer.isRunning = true;
       matchTime = UtilManager.formatTime(Timer.getSecondsParsed());
@@ -97,17 +105,12 @@ public class ResultCommand extends BaseCommand {
       matchTime = UtilManager.formatTime(Timer.getSecondsParsed());
       getLogger().send("default", Lang.RESULT_OVER.getConfigValue(new String[]{matchTime, getPrefix(), home, "" + home_result, "" + away_result, away}));
       if (webhook != null && isLeague()) {
-        webhook.setContent(Lang.WEBHOOK_MATCH_ENDED.getConfigValue(new String[]{HOME_NAME, String.valueOf(home_result), String.valueOf(away_result), AWAY_NAME, matchTime}));
-        try {
-          webhook.execute();
-        } catch (IOException e) {
-          getLogger().send("hoster", e.getMessage());
-        }
+        webhookMessages.add(Lang.WEBHOOK_MATCH_ENDED.getConfigValue(new String[]{HOME_NAME, String.valueOf(home_result), String.valueOf(away_result), AWAY_NAME, matchTime}));
       }
       secondHalf().getAfterTimer().run();
       Bukkit.getScheduler().cancelTasks(getPlugin());
       reset();
-      if (config.get("spawn") != null && sender instanceof Player) {
+      if (noTpAll && config.get("spawn") != null && sender instanceof Player) {
         Location spawn = (Location) config.get("spawn");
         Player player = (Player) sender;
         player.teleport(spawn);
@@ -137,12 +140,7 @@ public class ResultCommand extends BaseCommand {
       halfTime().cancelTask(getTimerId());
       timerId = secondHalf().startTask();
       if (webhook != null && isLeague()) {
-        webhook.setContent(Lang.WEBHOOK_MATCH_SECONDHALF.getConfigValue(new String[]{HOME_NAME, String.valueOf(home_result), String.valueOf(away_result), AWAY_NAME}));
-        try {
-          webhook.execute();
-        } catch (IOException e) {
-          getLogger().send("hoster", e.getMessage());
-        }
+        webhookMessages.add(Lang.WEBHOOK_MATCH_SECONDHALF.getConfigValue(new String[]{HOME_NAME, String.valueOf(home_result), String.valueOf(away_result), AWAY_NAME}));
       }
       getLogger().send("hoster", Lang.TIMER_CREATE.getConfigValue(new String[]{String.valueOf(getTimerId())}));
       getPlugin().getServer().getScheduler().runTaskLaterAsynchronously(getPlugin(), () -> Timer.secondsParsed = (Timer.getSeconds() - 60) / 2, 20L);
@@ -155,7 +153,7 @@ public class ResultCommand extends BaseCommand {
   public void onExtend(CommandSender sender, String[] args) {
     if (getUtilManager().isTaskQueued(getTimerId())) {
       if (args.length < 2) {
-        getLogger().send(sender, Lang.RESULT_HELP.getConfigValue(null));
+        getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rs extend &2<&aadd&2|&aremove&2> <&avreme&2>"}));
         return;
       }
       try {
@@ -180,7 +178,7 @@ public class ResultCommand extends BaseCommand {
           break;
       }
       getLogger().send("fcfa", Lang.TIMER_TIME_SET.getConfigValue(new String[]{UtilManager.formatTime(extraTimeNew)}));
-    }
+    } else getLogger().send(sender, Lang.TIMER_NOT_AVAILABLE.getConfigValue(null));
   }
 
   @Subcommand("add")
@@ -195,21 +193,16 @@ public class ResultCommand extends BaseCommand {
           getLogger().send("default", Lang.RESULT_ADD.getConfigValue(new String[]{args[1], home}));
         else getLogger().send("default", Lang.RESULT_ADD_ASSIST.getConfigValue(new String[]{args[1], home, args[2]}));
         if (webhook != null && isLeague()) {
-          webhook.setContent("");
           if (args.length == 2) {
-            webhook.addEmbed(new DiscordWebhook.EmbedObject()
+            embedObjects.add(new DiscordWebhook.EmbedObject()
                 .setColor(Color.decode(Lang.WEBHOOK_MATCH_SCORE_COLOR.getConfigValue(null)))
                 .setAuthor(Lang.WEBHOOK_MATCH_SCORE_AUTHOR_NAME.getConfigValue(new String[]{HOME_NAME}), null, Lang.WEBHOOK_MATCH_SCORE_AUTHOR_ICON.getConfigValue(null))
                 .setDescription(Lang.WEBHOOK_MATCH_SCORE_DESC.getConfigValue(new String[]{args[1], HOME_NAME, matchTime, HOME_NAME, String.valueOf(home_result), String.valueOf(away_result), AWAY_NAME})));
           } else {
-            webhook.addEmbed(new DiscordWebhook.EmbedObject()
+            embedObjects.add(new DiscordWebhook.EmbedObject()
                 .setColor(Color.decode(Lang.WEBHOOK_MATCH_SCORE_COLOR.getConfigValue(null)))
                 .setAuthor(Lang.WEBHOOK_MATCH_SCORE_AUTHOR_NAME.getConfigValue(new String[]{HOME_NAME}), null, Lang.WEBHOOK_MATCH_SCORE_AUTHOR_ICON.getConfigValue(null))
                 .setDescription(Lang.WEBHOOK_MATCH_ASSIST.getConfigValue(new String[]{args[1], HOME_NAME, matchTime, args[2], HOME_NAME, String.valueOf(home_result), String.valueOf(away_result), AWAY_NAME})));
-          } try {
-            webhook.execute();
-          } catch (IOException e) {
-            getLogger().send(sender, e.getMessage());
           }
         } else getLogger().send(sender, Lang.WEBHOOK_NOT_SETUP.getConfigValue(null));
       } else if (args[0].equalsIgnoreCase("away")) {
@@ -218,21 +211,16 @@ public class ResultCommand extends BaseCommand {
           getLogger().send("default", Lang.RESULT_ADD.getConfigValue(new String[]{args[1], away}));
         else getLogger().send("default", Lang.RESULT_ADD_ASSIST.getConfigValue(new String[]{args[1], away, args[2]}));
         if (webhook != null && isLeague()) {
-          webhook.setContent("");
           if (args.length == 2) {
-            webhook.addEmbed(new DiscordWebhook.EmbedObject()
+            embedObjects.add(new DiscordWebhook.EmbedObject()
                 .setColor(Color.decode(Lang.WEBHOOK_MATCH_SCORE_COLOR.getConfigValue(null)))
                 .setAuthor(Lang.WEBHOOK_MATCH_SCORE_AUTHOR_NAME.getConfigValue(new String[]{AWAY_NAME}), null, Lang.WEBHOOK_MATCH_SCORE_AUTHOR_ICON.getConfigValue(null))
                 .setDescription(Lang.WEBHOOK_MATCH_SCORE_DESC.getConfigValue(new String[]{args[1], AWAY_NAME, matchTime, HOME_NAME, String.valueOf(home_result), String.valueOf(away_result), AWAY_NAME})));
           } else {
-            webhook.addEmbed(new DiscordWebhook.EmbedObject()
+            embedObjects.add(new DiscordWebhook.EmbedObject()
                 .setColor(Color.decode(Lang.WEBHOOK_MATCH_SCORE_COLOR.getConfigValue(null)))
                 .setAuthor(Lang.WEBHOOK_MATCH_SCORE_AUTHOR_NAME.getConfigValue(new String[]{AWAY_NAME}), null, Lang.WEBHOOK_MATCH_SCORE_AUTHOR_ICON.getConfigValue(null))
                 .setDescription(Lang.WEBHOOK_MATCH_ASSIST.getConfigValue(new String[]{args[1], AWAY_NAME, matchTime, args[2], HOME_NAME, String.valueOf(home_result), String.valueOf(away_result), AWAY_NAME})));
-          } try {
-            webhook.execute();
-          } catch (IOException e) {
-            getLogger().send(sender, e.getMessage());
           }
         } else getLogger().send(sender, Lang.WEBHOOK_NOT_SETUP.getConfigValue(null));
       } else getLogger().send(sender, Lang.RESULT_USAGE.getConfigValue(null));
@@ -263,6 +251,10 @@ public class ResultCommand extends BaseCommand {
   @CommandPermission("leaguemanager.command.result.time")
   public void onTime(CommandSender sender, String[] args) {
     if (!getUtilManager().isTaskQueued(getTimerId())) {
+      if (args.length == 0) {
+        getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rs time &2<&avreme&2>"}));
+        return;
+      }
       try {
         time = Time.parseString(args[0]);
         if (time.toSeconds() < Time.parseString("10min").toSeconds())
@@ -276,8 +268,9 @@ public class ResultCommand extends BaseCommand {
 
   @Subcommand("teams")
   @CommandPermission("leaguemanager.command.result.teams")
+  @CommandCompletion("noTpAll")
   public void onTeams(CommandSender sender, String[] args) {
-    if (args.length == 2) {
+    if (args.length == 2 || args.length == 3) {
       HOME_NAME = args[0].toUpperCase();
       AWAY_NAME = args[1].toUpperCase();
       league = false;
@@ -300,11 +293,15 @@ public class ResultCommand extends BaseCommand {
               getHelper().getGroupMeta(args[1], "team") :
               getHelper().groupHasMeta(args[1], "b") ?
                   getHelper().getGroupMeta(args[1], "b") : AWAY_NAME;
-          Bukkit.dispatchCommand(sender, "warp " + args[0] + "top");
-          Bukkit.dispatchCommand(sender, "setspawn");
-          for (Player player : getPlugin().getServer().getOnlinePlayers()) {
-            getPlugin().getServer().getScheduler().runTaskLater(getPlugin(), () ->
-                Bukkit.dispatchCommand(player, "spawn"), 20L);
+          noTpAll = false;
+          if (!args[2].equalsIgnoreCase("noTpAll")) {
+            noTpAll = true;
+            Bukkit.dispatchCommand(sender, "warp " + args[0] + "top");
+            Bukkit.dispatchCommand(sender, "setspawn");
+            for (Player player : getPlugin().getServer().getOnlinePlayers()) {
+              getPlugin().getServer().getScheduler().runTaskLater(getPlugin(), () ->
+                  Bukkit.dispatchCommand(player, "spawn"), 20L);
+            }
           }
         }
       } else {
@@ -315,34 +312,26 @@ public class ResultCommand extends BaseCommand {
       getLogger().send(sender, Lang.TIMER_TEAMS_SET.getConfigValue(new String[]{home, away}));
       if (!isLeague()) return;
       if (webhook != null) {
-        webhook.setContent(Lang.WEBHOOK_TEAMS_SET.getConfigValue(new String[]{getCleanPrefix(), HOME_NAME, AWAY_NAME}));
-        try {
-          webhook.execute();
-        } catch (IOException e) {
-          getLogger().send(sender, e.getMessage());
-        }
+        webhookMessages.add(Lang.WEBHOOK_TEAMS_SET.getConfigValue(new String[]{getCleanPrefix(), HOME_NAME, AWAY_NAME}));
       } else getLogger().send(sender, Lang.WEBHOOK_NOT_SETUP.getConfigValue(null));
-    } else getLogger().send(sender, Lang.RESULT_HELP.getConfigValue(null));
+    } else getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rs teams &2<&ahome&2|&aaway&2> &3[&bnoTpAll&3]"}));
   }
 
   @Subcommand("prefix")
   @CommandPermission("leaguemanager.command.result.prefix")
   public void onPrefix(CommandSender sender, String[] args) {
-    prefix = getUtilManager().color(StringUtils.join(args, " ", 0, args.length));
-    cleanPrefix = ChatColor.stripColor(prefix);
-    getLogger().send("fcfa", Lang.TIMER_PREFIX_SET.getConfigValue(new String[]{getPrefix()}));
+    if (args.length > 0) {
+      prefix = getUtilManager().color(StringUtils.join(args, " ", 0, args.length));
+      cleanPrefix = ChatColor.stripColor(prefix);
+      getLogger().send("fcfa", Lang.TIMER_PREFIX_SET.getConfigValue(new String[]{getPrefix()}));
+    } else getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rs prefix &2<&aporuka sa razmacima&2>"}));
   }
 
   private Timer firstHalf() {
     return new Timer(getPlugin(), (int) time.toSeconds(), () -> {
       matchTime = UtilManager.formatTime(Timer.getSecondsParsed());
       if (webhook != null && isLeague()) {
-        webhook.setContent(Lang.WEBHOOK_MATCH_START.getConfigValue(new String[]{matchTime, HOME_NAME, AWAY_NAME}));
-        try {
-          webhook.execute();
-        } catch (IOException e) {
-          getLogger().send("hoster", e.getMessage());
-        }
+        webhookMessages.add(Lang.WEBHOOK_MATCH_START.getConfigValue(new String[]{matchTime, HOME_NAME, AWAY_NAME}));
       }
       getLogger().send("default", Lang.TIMER_STARTING.getConfigValue(new String[]{getPrefix()}));
       getLogger().broadcastBar(Lang.RESULT_STARTING.getConfigValue(new String[]{getPrefix()}));
@@ -368,12 +357,7 @@ public class ResultCommand extends BaseCommand {
       matchTime = UtilManager.formatTime(Timer.getSeconds());
       getLogger().send("default", Lang.RESULT_HALFTIME.getConfigValue(new String[]{matchTime, getPrefix(), home, "" + home_result, "" + away_result, away}));
       if (webhook != null && isLeague()) {
-        webhook.setContent(Lang.WEBHOOK_MATCH_HALFTIME.getConfigValue(new String[]{matchTime, HOME_NAME, String.valueOf(home_result), String.valueOf(away_result), AWAY_NAME}));
-        try {
-          webhook.execute();
-        } catch (IOException e) {
-          getLogger().send("hoster", e.getMessage());
-        }
+        webhookMessages.add(Lang.WEBHOOK_MATCH_HALFTIME.getConfigValue(new String[]{matchTime, HOME_NAME, String.valueOf(home_result), String.valueOf(away_result), AWAY_NAME}));
       }
     }, () -> Timer.isRunning = false, (t ->
         getLogger().broadcastBar(Lang.RESULT_ACTIONBAR_HT.getConfigValue(new String[]{getPrefix(), home, "" + home_result, "" + away_result, away})))
@@ -382,22 +366,31 @@ public class ResultCommand extends BaseCommand {
 
   private Timer secondHalf() {
     return new Timer(getPlugin(), (int) (time.toSeconds() + 60), () -> getLogger().send("default", Lang.RESULT_SECONDHALF.getConfigValue(new String[]{matchTime, getPrefix(), home, "" + home_result, "" + away_result, away})), () -> {
-      if (isLeague()) {
-        if (webhook != null) {
-          if (home_result != away_result) {
-            getDataManager().setConfig("teamdata", "main");
-            webhook.setContent(getDataManager().getConfig("main").getString(home_result > away_result ?
+      if (webhook != null && isLeague()) {
+        if (home_result != away_result) {
+          getDataManager().setConfig("teamdata", "main");
+          if (getDataManager().getConfig("main").getString(HOME_NAME + ".win-video") != null &&
+              getDataManager().getConfig("main").getString(AWAY_NAME + ".win-video") != null) {
+            webhookMessages.add(getDataManager().getConfig("main").getString(home_result > away_result ?
                 HOME_NAME + ".win-video" : away_result > home_result ?
                 AWAY_NAME + ".win-video" : null));
-            try {
-              if (getDataManager().getConfig("main").getString(HOME_NAME + ".win-video") != null &&
-                  getDataManager().getConfig("main").getString(AWAY_NAME + ".win-video") != null) {
-                webhook.execute();
-              } else getLogger().send("hoster", Lang.ROSTERS_NOT_FOUND.getConfigValue(new String[]{"win video"}));
-            } catch (IOException e) {
-              getLogger().send("hoster", e.getMessage());
-            }
           }
+        }
+
+        try {
+          String finalMessage = "";
+          for (String message : webhookMessages) {
+            finalMessage += message + "\\n";
+          }
+
+          webhook.setContent(finalMessage);
+          for (DiscordWebhook.EmbedObject embedObject : getEmbedObjects()) {
+            webhook.addEmbed(embedObject);
+          }
+
+          webhook.execute();
+        } catch (IOException e) {
+          getLogger().send("hoster", e.getMessage());
         }
       }
       getLogger().broadcastBar(Lang.RESULT_END.getConfigValue(new String[]{getPrefix(), home, "" + home_result, "" + away_result, away}));
@@ -437,5 +430,7 @@ public class ResultCommand extends BaseCommand {
     away_result = 0;
     Timer.isRunning = false;
     league = false;
+    webhookMessages.clear();
+    embedObjects.clear();
   }
 }
