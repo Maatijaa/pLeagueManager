@@ -38,16 +38,18 @@ public class CubeCleaner {
   }
 
   public void clearCubes() {
+    this.empty = true;
+    this.amount = 0;
+
     for (String locName : config.getConfigurationSection("practice-areas").getKeys(false)) {
       Location location = (Location) config.get("practice-areas." + locName);
       Collection<Entity> nearbyEntities = location.getWorld().getNearbyEntities(location, 100, 100, 100);
 
-      this.empty = true;
       for (Entity entity : nearbyEntities) {
         if (entity instanceof Slime) {
           this.amount++;
-          entity.remove();
           this.empty = false;
+          entity.remove();
         }
       }
     }

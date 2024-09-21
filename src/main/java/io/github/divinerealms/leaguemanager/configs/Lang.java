@@ -21,6 +21,7 @@ public enum Lang {
       "{prefix_error}Nepoznat argument. Koristite:",
       "{prefix_error}&6/&e{0}")),
   INGAME_ONLY("ingame-only", "{prefix_error}Komanda se može koristiti samo u igri."),
+  CUBES_EMPTY("cubes-empty", "{prefix_error}Nema lopti za čišćenje."),
   CLEARED_CUBES("cleared-cubes", "{prefix_success}Obrisano &e{0} lopti &fsa zona treniranja. &bℹ"),
   PRACTICE_AREA_SET("practice-area-set", "{prefix_success}Uspešno postavljena lokacija &b{0}&f (&o{1}, {2}, {3}&f)."),
   PRACTICE_AREAS_EMPTY("practice-areas-empty", "{prefix_error}Nedefinisane zone treniranja. Ne brišemo lopte."),

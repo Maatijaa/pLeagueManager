@@ -8,6 +8,7 @@ import io.github.divinerealms.leaguemanager.configs.Config;
 import io.github.divinerealms.leaguemanager.configs.Lang;
 import io.github.divinerealms.leaguemanager.managers.DataManager;
 import io.github.divinerealms.leaguemanager.managers.UtilManager;
+import io.github.divinerealms.leaguemanager.utils.CubeCleaner;
 import io.github.divinerealms.leaguemanager.utils.Helper;
 import io.github.divinerealms.leaguemanager.utils.Logger;
 import io.github.divinerealms.leaguemanager.utils.Time;
@@ -32,6 +33,7 @@ public class LMCommand extends BaseCommand {
   private final UtilManager utilManager;
   private final Logger logger;
   private final Helper helper;
+  private final CubeCleaner cubeCleaner;
   private final DataManager dataManager;
   private final String playerDataFolder = "playerdata";
 
@@ -40,6 +42,7 @@ public class LMCommand extends BaseCommand {
     this.utilManager = utilManager;
     this.logger = utilManager.getLogger();
     this.helper = utilManager.getHelper();
+    this.cubeCleaner = utilManager.getCubeCleaner();
     this.dataManager = new DataManager(utilManager.getPlugin());
   }
 
@@ -70,6 +73,18 @@ public class LMCommand extends BaseCommand {
   public void onReload(CommandSender sender) {
     getInstance().onEnable();
     getLogger().send(sender, Lang.RELOAD.getConfigValue(null));
+  }
+
+  @Subcommand("clearcubes|cc")
+  @CommandPermission("leaguemanager.command.clearcubes")
+  public void onClearCube(CommandSender sender) {
+    if (getCubeCleaner().isEmpty()) {
+      getLogger().send(sender, Lang.CUBES_EMPTY.getConfigValue(null));
+      return;
+    }
+
+    getCubeCleaner().clearCubes();
+    getLogger().broadcast(Lang.CLEARED_CUBES.getConfigValue(new String[]{String.valueOf(getCubeCleaner().getAmount())}));
   }
 
   @Subcommand("setspawn")
