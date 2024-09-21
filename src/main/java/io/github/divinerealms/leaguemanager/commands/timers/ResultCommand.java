@@ -296,7 +296,7 @@ public class ResultCommand extends BaseCommand {
           noTpAll = false;
           if (!args[2].equalsIgnoreCase("noTpAll")) {
             noTpAll = true;
-            Bukkit.dispatchCommand(sender, "warp " + args[0] + "top");
+            Bukkit.dispatchCommand(sender, "warp " + args[0]);
             Bukkit.dispatchCommand(sender, "setspawn");
             for (Player player : getPlugin().getServer().getOnlinePlayers()) {
               getPlugin().getServer().getScheduler().runTaskLater(getPlugin(), () ->

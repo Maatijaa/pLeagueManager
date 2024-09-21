@@ -56,7 +56,7 @@ public class PerRosterGUI extends InventoryGUI {
             .consumer(event -> {
               Player target = (Player) event.getWhoClicked();
               target.closeInventory();
-              target.performCommand("warp " + getTeam() + "top");
+              target.performCommand("warp " + getTeam());
             }));
       } else if (slot == 38) {
         this.addButton(slot, hasAccess(player) ?
