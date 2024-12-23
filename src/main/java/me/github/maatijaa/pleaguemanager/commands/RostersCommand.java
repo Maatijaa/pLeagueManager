@@ -32,7 +32,7 @@ import java.util.UUID;
 @SuppressWarnings("deprecation")
 @Getter
 @CommandAlias("rosters|rt")
-@CommandPermission("leaguemanager.command.rosters")
+@CommandPermission("pleaguemanager.command.rosters")
 public class RostersCommand extends BaseCommand {
   private final UtilManager utilManager;
   private final GUIManager guiManager;
@@ -52,7 +52,7 @@ public class RostersCommand extends BaseCommand {
 
   @Default
   @Subcommand("gui")
-  @CommandPermission("leaguemanager.command.rosters")
+  @CommandPermission("pleaguemanager.command.rosters")
   public void onOpen(Player player, String[] args) {
     if (args.length == 0) {
       getGuiManager().openGUI(new RostersGUI(getUtilManager(), getGuiManager()), player);
@@ -76,14 +76,14 @@ public class RostersCommand extends BaseCommand {
 
   @CatchUnknown
   @HelpCommand
-  @CommandPermission("leaguemanager.command.rosters.help")
+  @CommandPermission("pleaguemanager.command.rosters.help")
   public void onHelp(CommandSender sender) {
     getLogger().send(sender, Lang.ROSTERS_HELP.getConfigValue(null));
   }
 
   @Subcommand("create")
   @CommandCompletion("b")
-  @CommandPermission("leaguemanager.command.rosters.create")
+  @CommandPermission("pleaguemanager.command.rosters.create")
   public void onCreate(CommandSender sender, String[] args) {
     if (!(args.length >= 2 && args.length <= 3)) {
       getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rt create &2<&atim&2> <&atag&2> &3[&bb&3]"}));
@@ -98,8 +98,8 @@ public class RostersCommand extends BaseCommand {
 
     getHelper().getGroupManager().createAndLoadGroup(name).thenApplyAsync(group -> {
       if (args.length == 2) {
-        group.data().add(WeightNode.builder(100).withContext("server", "football").build());
-        group.data().add(MetaNode.builder("team", tag).withContext("server", "football").build());
+        group.data().add(WeightNode.builder(100).build());
+        group.data().add(MetaNode.builder("team", tag).build());
 
         String team = name.toUpperCase(), type = "main";
         if (!getDataManager().configExists(getTeamData(), type)) {
@@ -115,8 +115,8 @@ public class RostersCommand extends BaseCommand {
         getDataManager().getConfig(type).set(team + ".players", players);
         getDataManager().saveConfig(type);
       } else if (args[2].equalsIgnoreCase("b")) {
-        group.data().add(WeightNode.builder(99).withContext("server", "football").build());
-        group.data().add(MetaNode.builder("b", tag).withContext("server", "football").build());
+        group.data().add(WeightNode.builder(99).build());
+        group.data().add(MetaNode.builder("b", tag).build());
 
         String team = name.toUpperCase(), type = "juniors";
         if (!getDataManager().configExists(getTeamData(), type)) {
@@ -135,7 +135,7 @@ public class RostersCommand extends BaseCommand {
 
       for (String permission : getHelper().getPermissions()) {
         permission = permission.replace("%team%", name.toLowerCase());
-        group.data().add(PermissionNode.builder(permission).withContext("server", "football").build());
+        group.data().add(PermissionNode.builder(permission).build());
       }
 
       getLogger().send("fcfa", Lang.ROSTERS_TEAM_CREATED.getConfigValue(new String[]{tag}));
@@ -144,7 +144,7 @@ public class RostersCommand extends BaseCommand {
   }
 
   @Subcommand("delete")
-  @CommandPermission("leaguemanager.command.rosters.delete")
+  @CommandPermission("pleaguemanager.command.rosters.delete")
   public void onDelete(CommandSender sender, String[] args) {
     if (args.length != 1) {
       getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rt delete &2<&atim&2>"}));
@@ -180,7 +180,7 @@ public class RostersCommand extends BaseCommand {
 
   @Subcommand("add")
   @CommandCompletion("@players")
-  @CommandPermission("leaguemanager.command.rosters.add")
+  @CommandPermission("pleaguemanager.command.rosters.add")
   public void onAdd(CommandSender sender, String[] args) {
     if (args.length < 2) {
       getLogger().send(sender, Lang.ROSTERS_ADD_USAGE.getConfigValue(null));
@@ -239,14 +239,14 @@ public class RostersCommand extends BaseCommand {
         getHelper().playerRemoveTeams(target.getUniqueId());
       }
 
-      getHelper().playerAddGroup(target.getUniqueId(), team, "football");
+      getHelper().playerAddGroup(target.getUniqueId(), team);
       getLogger().send("fcfa", Lang.ROSTERS_USER_ADDED.getConfigValue(new String[]{sender.getName(), target.getName(), team.toUpperCase()}));
     } else getLogger().send(sender, Lang.INSUFFICIENT_PERMISSION.getConfigValue(null));
   }
 
   @Subcommand("remove")
   @CommandCompletion("@players")
-  @CommandPermission("leaguemanager.command.rosters.remove")
+  @CommandPermission("pleaguemanager.command.rosters.remove")
   public void onRemove(CommandSender sender, String[] args) {
     if (args.length < 2) {
       getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rt remove &2<&atim&2> <&aigrač&2>"}));
@@ -281,14 +281,14 @@ public class RostersCommand extends BaseCommand {
       getDataManager().getConfig(type).set(team + ".players", players);
       getDataManager().saveConfig(type);
 
-      getHelper().playerRemoveGroup(target.getUniqueId(), team, "football");
+      getHelper().playerRemoveGroup(target.getUniqueId(), team);
       getLogger().send("fcfa", Lang.ROSTERS_USER_REMOVED.getConfigValue(new String[]{sender.getName(), target.getName(), team.toUpperCase()}));
     } else getLogger().send(sender, Lang.INSUFFICIENT_PERMISSION.getConfigValue(null));
   }
 
   @Subcommand("set")
   @CommandCompletion("@players|name|tag|country|number|position|contract")
-  @CommandPermission("leaguemanager.command.rosters.set")
+  @CommandPermission("pleaguemanager.command.rosters.set")
   public void onSet(CommandSender sender, String[] args) {
     if (args.length < 1 || args.length > 3) {
       getLogger().send(sender, Lang.ROSTERS_SET_USAGE.getConfigValue(null));
@@ -384,7 +384,7 @@ public class RostersCommand extends BaseCommand {
   }
 
   @Subcommand("createbanner|banner|cb")
-  @CommandPermission("leaguemanager.command.rosters.createbanner")
+  @CommandPermission("pleaguemanager.command.rosters.createbanner")
   public void onCreateBanner(Player player, String[] args) {
     if (args.length != 1) {
       getLogger().send(player, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"rt createbanner &2<&atim&2>"}));

@@ -1,3 +1,6 @@
+
+// will not use this command soon
+
 package me.github.maatijaa.pleaguemanager.commands;
 
 import co.aikar.commands.BaseCommand;

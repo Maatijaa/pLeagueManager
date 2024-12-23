@@ -6,7 +6,6 @@ import me.github.maatijaa.pleaguemanager.configs.Config;
 import me.github.maatijaa.pleaguemanager.configs.Lang;
 import me.github.maatijaa.pleaguemanager.managers.DataManager;
 import me.github.maatijaa.pleaguemanager.managers.UtilManager;
-import io.github.divinerealms.leaguemanager.utils.*;
 import lombok.Getter;
 import me.github.maatijaa.pleaguemanager.utils.*;
 import org.apache.commons.lang.StringUtils;
@@ -25,7 +24,7 @@ import java.util.List;
 
 @Getter
 @CommandAlias("result|rs")
-@CommandPermission("leaguemanager.command.result")
+@CommandPermission("pleaguemanager.command.result")
 public class ResultCommand extends BaseCommand {
   private final Plugin plugin;
   private final UtilManager utilManager;
@@ -60,13 +59,13 @@ public class ResultCommand extends BaseCommand {
   @Default
   @CatchUnknown
   @Subcommand("help")
-  @CommandPermission("leaguemanager.command.result.help")
+  @CommandPermission("pleaguemanager.command.result.help")
   public void onHelp(CommandSender sender) {
     getLogger().send(sender, Lang.RESULT_HELP.getConfigValue(null));
   }
 
   @Subcommand("coinflip|cf")
-  @CommandPermission("leaguemanager.command.coinflip")
+  @CommandPermission("pleaguemanager.command.coinflip")
   @CommandCompletion("heads|tails")
   public void onCoinFlip(CommandSender sender, String[] args) {
     if (!(sender instanceof Player)) {
@@ -85,7 +84,7 @@ public class ResultCommand extends BaseCommand {
   }
 
   @Subcommand("start|s")
-  @CommandPermission("leaguemanager.command.result.start")
+  @CommandPermission("pleaguemanager.command.result.start")
   public void onStart(CommandSender sender) {
     if (!isSetup()) {
       getLogger().send(sender, Lang.RESULT_NOT_SETUP.getConfigValue(null));
@@ -100,7 +99,7 @@ public class ResultCommand extends BaseCommand {
   }
 
   @Subcommand("stop")
-  @CommandPermission("leaguemanager.command.result.stop")
+  @CommandPermission("pleaguemanager.command.result.stop")
   public void onStop(CommandSender sender) {
     if (getUtilManager().isTaskQueued(getTimerId())) {
       matchTime = UtilManager.formatTime(Timer.getSecondsParsed());
@@ -122,7 +121,7 @@ public class ResultCommand extends BaseCommand {
   }
 
   @Subcommand("pause|p")
-  @CommandPermission("leaguemanager.command.result.pause")
+  @CommandPermission("pleaguemanager.command.result.pause")
   public void onPause(CommandSender sender) {
     if (getUtilManager().isTaskQueued(getTimerId())) {
       matchTime = UtilManager.formatTime(Timer.getSecondsParsed());
@@ -134,7 +133,7 @@ public class ResultCommand extends BaseCommand {
   }
 
   @Subcommand("resume|r")
-  @CommandPermission("leaguemanager.command.result.resume")
+  @CommandPermission("pleaguemanager.command.result.resume")
   public void onResume(CommandSender sender) {
     if (getUtilManager().isTaskQueued(getTimerId())) {
       matchTime = UtilManager.formatTime(Timer.getSeconds() + 1);
@@ -150,7 +149,7 @@ public class ResultCommand extends BaseCommand {
 
   @Subcommand("extend")
   @CommandCompletion("add|remove")
-  @CommandPermission("leaguemanager.command.result.extend")
+  @CommandPermission("pleaguemanager.command.result.extend")
   public void onExtend(CommandSender sender, String[] args) {
     if (getUtilManager().isTaskQueued(getTimerId())) {
       if (args.length < 2) {
@@ -184,7 +183,7 @@ public class ResultCommand extends BaseCommand {
 
   @Subcommand("add")
   @CommandCompletion("home|away|@players")
-  @CommandPermission("leaguemanager.command.result.add")
+  @CommandPermission("pleaguemanager.command.result.add")
   public void onAdd(CommandSender sender, String[] args) {
     if (getUtilManager().isTaskQueued(getTimerId()) && (args.length == 2 || args.length == 3)) {
       matchTime = UtilManager.formatTime(Timer.getSecondsParsed());
@@ -230,7 +229,7 @@ public class ResultCommand extends BaseCommand {
 
   @Subcommand("remove")
   @CommandCompletion("home|away")
-  @CommandPermission("leaguemanager.command.result.remove")
+  @CommandPermission("pleaguemanager.command.result.remove")
   public void onRemove(CommandSender sender, String[] args) {
     if (getUtilManager().isTaskQueued(getTimerId()) && args.length == 1) {
       matchTime = UtilManager.formatTime(Timer.getSecondsParsed());
@@ -249,7 +248,7 @@ public class ResultCommand extends BaseCommand {
   }
 
   @Subcommand("time")
-  @CommandPermission("leaguemanager.command.result.time")
+  @CommandPermission("pleaguemanager.command.result.time")
   public void onTime(CommandSender sender, String[] args) {
     if (!getUtilManager().isTaskQueued(getTimerId())) {
       if (args.length == 0) {
@@ -268,7 +267,7 @@ public class ResultCommand extends BaseCommand {
   }
 
   @Subcommand("teams")
-  @CommandPermission("leaguemanager.command.result.teams")
+  @CommandPermission("pleaguemanager.command.result.teams")
   @CommandCompletion("noTpAll")
   public void onTeams(CommandSender sender, String[] args) {
     if (args.length == 2 || args.length == 3) {
@@ -319,7 +318,7 @@ public class ResultCommand extends BaseCommand {
   }
 
   @Subcommand("prefix")
-  @CommandPermission("leaguemanager.command.result.prefix")
+  @CommandPermission("pleaguemanager.command.result.prefix")
   public void onPrefix(CommandSender sender, String[] args) {
     if (args.length > 0) {
       prefix = getUtilManager().color(StringUtils.join(args, " ", 0, args.length));

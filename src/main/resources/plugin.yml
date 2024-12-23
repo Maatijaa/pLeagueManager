@@ -11,4 +11,4 @@ depend:
 softdepend:
   - HeadDatabase
   - WorldEdit
-description: Plugin for easier league organization.
+description: Plugin for easier league organization, modified by Maatijaa

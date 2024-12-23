@@ -73,7 +73,7 @@ public class Helper {
     User user = getPlayer(uniqueId);
     for (Group group : user.getInheritedGroups(user.getQueryOptions())) {
       int groupWeight = group.getWeight().isPresent() ? group.getWeight().getAsInt() : 0;
-      if (groupWeight == 100 || groupWeight == 99) playerRemoveGroup(uniqueId, group.getName(), "football");
+      if (groupWeight == 100 || groupWeight == 99) playerRemoveGroup(uniqueId, group.getName());
     }
   }
 
@@ -95,13 +95,13 @@ public class Helper {
     return false;
   }
 
-  public void playerAddGroup(UUID uniqueId, String groupName, String server) {
-    InheritanceNode inheritanceNode = InheritanceNode.builder(groupName).withContext("server", server).build();
+  public void playerAddGroup(UUID uniqueId, String groupName) {
+    InheritanceNode inheritanceNode = InheritanceNode.builder(groupName).build();
     getUserManager().modifyUser(uniqueId, user -> user.data().add(inheritanceNode));
   }
 
-  public void playerRemoveGroup(UUID uniqueId, String groupName, String server) {
-    InheritanceNode inheritanceNode = InheritanceNode.builder(groupName).withContext("server", server).build();
+  public void playerRemoveGroup(UUID uniqueId, String groupName) {
+    InheritanceNode inheritanceNode = InheritanceNode.builder(groupName).build();
     getUserManager().modifyUser(uniqueId, user -> user.data().remove(inheritanceNode));
   }
 
@@ -120,18 +120,18 @@ public class Helper {
     return permissionNode != null && permissionNode.getValue();
   }
 
-  public void playerAddPermission(UUID uniqueId, String permission, String server) {
-    PermissionNode permissionNode = PermissionNode.builder(permission).withContext("server", server).build();
+  public void playerAddPermission(UUID uniqueId, String permission) {
+    PermissionNode permissionNode = PermissionNode.builder(permission).build();
     getUserManager().modifyUser(uniqueId, user -> user.data().add(permissionNode));
   }
 
-  public void playerRemovePermission(UUID uniqueId, String permission, String server) {
-    PermissionNode permissionNode = PermissionNode.builder(permission).withContext("server", server).build();
+  public void playerRemovePermission(UUID uniqueId, String permission) {
+    PermissionNode permissionNode = PermissionNode.builder(permission).build();
     getUserManager().modifyUser(uniqueId, user -> user.data().remove(permissionNode));
   }
 
   public void playerAddMeta(UUID uniqueId, String key, String value) {
-    MetaNode node = MetaNode.builder(key, value).withContext("server", "football").build();
+    MetaNode node = MetaNode.builder(key, value).build();
     getUserManager().modifyUser(uniqueId, user -> user.data().add(node));
   }
 
@@ -167,13 +167,13 @@ public class Helper {
     return group.getCachedData().getPermissionData().checkPermission(permission).asBoolean();
   }
 
-  public void groupAddPermission(String groupName, String permission, String server, boolean toggle) {
-    PermissionNode permissionNode = PermissionNode.builder(permission).value(toggle).withContext("server", server).build();
+  public void groupAddPermission(String groupName, String permission, boolean toggle) {
+    PermissionNode permissionNode = PermissionNode.builder(permission).value(toggle).build();
     getGroupManager().modifyGroup(groupName, group -> group.data().add(permissionNode));
   }
 
-  public void groupRemovePermission(String groupName, String permission, String server) {
-    PermissionNode permissionNode = PermissionNode.builder(permission).withContext("server", server).build();
+  public void groupRemovePermission(String groupName, String permission) {
+    PermissionNode permissionNode = PermissionNode.builder(permission).build();
     getGroupManager().modifyGroup(groupName, group -> group.data().remove(permissionNode));
   }
 

@@ -27,7 +27,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Getter
-@CommandAlias("leaguemanager|lm")
+@CommandAlias("pleaguemanager|plm")
 public class LMCommand extends BaseCommand {
   private final LeagueManager instance;
   private final UtilManager utilManager;
@@ -63,20 +63,20 @@ public class LMCommand extends BaseCommand {
   }
 
   @Subcommand("help")
-  @CommandPermission("leaguemanager.command.help")
+  @CommandPermission("pleaguemanager.command.help")
   public void onHelp(CommandSender sender, CommandHelp help) {
     getLogger().send(sender, Lang.HELP.getConfigValue(null));
   }
 
   @Subcommand("reload")
-  @CommandPermission("leaguemanager.command.reload")
+  @CommandPermission("pleaguemanager.command.reload")
   public void onReload(CommandSender sender) {
     getInstance().onEnable();
     getLogger().send(sender, Lang.RELOAD.getConfigValue(null));
   }
 
   @Subcommand("clearcubes|cc")
-  @CommandPermission("leaguemanager.command.clearcubes")
+  @CommandPermission("pleaguemanager.command.clearcubes")
   public void onClearCube(CommandSender sender) {
     if (getCubeCleaner().isEmpty()) {
       getLogger().send(sender, Lang.CUBES_EMPTY.getConfigValue(null));
@@ -88,7 +88,7 @@ public class LMCommand extends BaseCommand {
   }
 
   @Subcommand("setspawn")
-  @CommandPermission("leaguemanager.command.setspawn")
+  @CommandPermission("pleaguemanager.command.setspawn")
   public void onSetSpawn(CommandSender sender) {
     if (sender instanceof Player) {
       Player player = (Player) sender;
@@ -105,24 +105,24 @@ public class LMCommand extends BaseCommand {
   }
 
   @Subcommand("toggle")
-  @CommandPermission("leaguemanager.command.toggle")
+  @CommandPermission("pleaguemanager.command.toggle")
   public void onToggle(CommandSender sender) {
     String state;
     Server server = getInstance().getServer();
     if (getUtilManager().isFcEnabled()) {
       state = Lang.OFF.getConfigValue(null);
-      getHelper().groupAddPermission("default", "leaguemanager.footcube", "football", false);
+      getHelper().groupAddPermission("default", "pleaguemanager.footcube", false);
       getUtilManager().setFcEnabled(false);
     } else {
       state = Lang.ON.getConfigValue(null);
-      getHelper().groupAddPermission("default", "leaguemanager.footcube", "football", true);
+      getHelper().groupAddPermission("default", "pleaguemanager.footcube", true);
       getUtilManager().setFcEnabled(true);
     }
     server.broadcastMessage(Lang.TOGGLE.getConfigValue(new String[]{state, sender.getName()}));
   }
 
   @Subcommand("setPracticeArea|spa")
-  @CommandPermission("leaguemanager.command.setPracticeArea")
+  @CommandPermission("pleaguemanager.command.setPracticeArea")
   public void onPracticeAreaSet(CommandSender sender, String[] args) {
     if (!(sender instanceof Player)) {
       getLogger().send(sender, Lang.INGAME_ONLY.getConfigValue(null));
@@ -132,7 +132,7 @@ public class LMCommand extends BaseCommand {
     Player player = (Player) sender;
 
     if (args.length < 1) {
-      getLogger().send(player, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm spa &2<&anaziv&2>"}));
+      getLogger().send(player, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"plm fkk &2<&anaziv&2>"}));
     } else {
       YamlConfiguration config = Config.getConfig("config.yml");
       String locName = args[0];
@@ -147,10 +147,10 @@ public class LMCommand extends BaseCommand {
 
   @Subcommand("ban")
   @CommandCompletion("@players")
-  @CommandPermission("leaguemanager.command.ban")
+  @CommandPermission("pleaguemanager.command.ban")
   public void onBan(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm ban &2<&aigrač&2> <&atrajanje&2> &3[&brazlog&3]"}));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"plm ban &2<&aigrač&2> <&atrajanje&2> &3[&brazlog&3]"}));
     } else if (args.length >= 2) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
@@ -164,10 +164,9 @@ public class LMCommand extends BaseCommand {
           getLogger().send(sender, Lang.INVALID_TIME.getConfigValue(null));
         }
 
-        Node node = Node.builder("leaguemanager.banned")
+        Node node = Node.builder("pleaguemanager.banned")
             .value(true)
             .expiry(time.toMilliseconds(), TimeUnit.MILLISECONDS)
-            .withContext("server", "football")
             .build();
         DataMutateResult result = user.data().add(node);
 
@@ -191,22 +190,22 @@ public class LMCommand extends BaseCommand {
         getLogger().send(sender, Lang.USER_NOT_FOUND.getConfigValue(null));
       }
     } else {
-      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm ban &2<&aigrač&2> <&atrajanje&2> &3[&brazlog&3]"}));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"plm ban &2<&aigrač&2> <&atrajanje&2> &3[&brazlog&3]"}));
     }
   }
 
   @Subcommand("unban")
   @CommandCompletion("@players")
-  @CommandPermission("leaguemanager.command.unban")
+  @CommandPermission("pleaguemanager.command.unban")
   public void onUnban(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm unban &2<&aigrač&2>"}));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"plm unban &2<&aigrač&2>"}));
     } else if (args.length == 1) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
       if (target != null && target.hasPlayedBefore()) {
         User user = getHelper().getPlayer(target.getUniqueId());
-        Node node = user.getCachedData().getPermissionData().queryPermission("leaguemanager.banned").node();
+        Node node = user.getCachedData().getPermissionData().queryPermission("pleaguemanager.banned").node();
 
         if (node != null && node.hasExpiry()) {
           DataMutateResult result = user.data().remove(node);
@@ -235,16 +234,16 @@ public class LMCommand extends BaseCommand {
 
   @Subcommand("checkban")
   @CommandCompletion("@players")
-  @CommandPermission("leaguemanager.command.checkban")
+  @CommandPermission("pleaguemanager.command.checkban")
   public void onCheckBan(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm checkban &2<&aigrač&2>"}));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"plm checkban &2<&aigrač&2>"}));
     } else if (args.length == 1) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
       if (target != null && target.hasPlayedBefore()) {
         User user = getHelper().getPlayer(target.getUniqueId());
-        Node node = user.getCachedData().getPermissionData().queryPermission("leaguemanager.banned").node();
+        Node node = user.getCachedData().getPermissionData().queryPermission("pleaguemanager.banned").node();
 
         if (node != null && node.hasExpiry()) {
           String[] banData = getBanData(target.getUniqueId());
@@ -272,7 +271,7 @@ public class LMCommand extends BaseCommand {
   @CommandPermission("leaguemanager.command.suspend")
   public void onSuspend(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm suspend &2<&aigrač&2> <&aduration&2> &3[&breason&3]"}));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"plm suspend &2<&aigrač&2> <&aduration&2> &3[&breason&3]"}));
     } else if (args.length >= 2) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
@@ -289,7 +288,6 @@ public class LMCommand extends BaseCommand {
         Node node = Node.builder("group.suspend")
             .value(true)
             .expiry(time.toMilliseconds(), TimeUnit.MILLISECONDS)
-            .withContext("server", "football")
             .build();
         DataMutateResult result = user.data().add(node);
 
@@ -312,16 +310,16 @@ public class LMCommand extends BaseCommand {
         getLogger().send(sender, Lang.USER_NOT_FOUND.getConfigValue(null));
       }
     } else {
-      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm suspend &2<&aigrač&2> <&aduration&2> &3[&breason&3]"}));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"plm suspend &2<&aigrač&2> <&aduration&2> &3[&breason&3]"}));
     }
   }
 
   @Subcommand("unsuspend")
   @CommandCompletion("@players")
-  @CommandPermission("leaguemanager.command.unsuspend")
+  @CommandPermission("pleaguemanager.command.unsuspend")
   public void onUnSuspend(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm unsuspend &2<&aigrač&2>"}));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"plm unsuspend &2<&aigrač&2>"}));
     } else if (args.length == 1) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
@@ -356,10 +354,10 @@ public class LMCommand extends BaseCommand {
 
   @Subcommand("checksuspend")
   @CommandCompletion("@players")
-  @CommandPermission("leaguemanager.command.checksuspend")
+  @CommandPermission("pleaguemanager.command.checksuspend")
   public void onCheckSuspend(CommandSender sender, String[] args) {
     if (args.length < 1) {
-      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"lm checksuspend &2<&aigrač&2>"}));
+      getLogger().send(sender, Lang.INCORRECT_USAGE.getConfigValue(new String[]{"plm checksuspend &2<&aigrač&2>"}));
     } else if (args.length == 1) {
       OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 

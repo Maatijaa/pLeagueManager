@@ -91,7 +91,7 @@ public class StatisticsCommand extends BaseCommand {
   }
 
   @Subcommand("add")
-  @CommandPermission("leaguemanager.stats.add")
+  @CommandPermission("pleaguemanager.stats.add")
   @CommandCompletion("@players|goals|assists|yellow-cards|red-cards|clean-sheets")
   public void onAdd(CommandSender sender, String[] args) {
     if (args.length < 1) {
@@ -131,7 +131,7 @@ public class StatisticsCommand extends BaseCommand {
   }
 
   @Subcommand("remove")
-  @CommandPermission("leaguemanager.stats.remove")
+  @CommandPermission("pleaguemanager.stats.remove")
   @CommandCompletion("@players|goals|assists|yellow-cards|red-cards|clean-sheets")
   public void onRemove(CommandSender sender, String[] args) {
     if (args.length < 1) {
@@ -171,7 +171,7 @@ public class StatisticsCommand extends BaseCommand {
   }
 
   @Subcommand("set")
-  @CommandPermission("leaguemanager.stats.set")
+  @CommandPermission("pleaguemanager.stats.set")
   @CommandCompletion("@players|goals|assists|yellow-cards|red-cards|clean-sheets")
   public void onSet(CommandSender sender, String[] args) {
     if (args.length < 1) {

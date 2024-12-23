@@ -1,6 +1,7 @@
 package me.github.maatijaa.pleaguemanager;
 
 import co.aikar.commands.BukkitCommandManager;
+import com.avaje.ebean.Update;
 import me.github.maatijaa.pleaguemanager.commands.*;
 import me.github.maatijaa.pleaguemanager.commands.timers.*;
 import me.github.maatijaa.pleaguemanager.configs.Config;
@@ -15,6 +16,8 @@ import net.luckperms.api.LuckPerms;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import me.github.maatijaa.pleaguemanager.utils.UpdateChecker;
 
 @Setter
 @Getter
@@ -31,6 +34,12 @@ public class LeagueManager extends JavaPlugin {
 
   @Override
   public void onEnable() {
+
+    // part of update checker feature
+    String versionUrl = "https://raw.githubusercontent.com/Maatijaa/pLeagueManager/refs/heads/master/version";
+    new UpdateChecker(this, versionUrl).checkForUpdates();
+    // --------------------------------------------------------------
+
     instance = this;
     getServer().getScheduler().cancelTasks(getInstance());
     setupMessages();
@@ -54,7 +63,7 @@ public class LeagueManager extends JavaPlugin {
 
   private void setupConfig() {
     Config.setup(this);
-    this.configManager.loadConfig("#League Manager Config", "config.yml");
+    this.configManager.loadConfig("#pLeague Manager Config", "config.yml");
     this.config = Config.getConfig("config.yml");
   }
 

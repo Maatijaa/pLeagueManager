@@ -74,15 +74,15 @@ public class PerPlayerGUI extends InventoryGUI {
                   getDataManager().getConfig(type).set(teamName.toUpperCase() + ".manager", targetName);
                   getDataManager().saveConfig(type);
 
-                  getHelper().playerAddPermission(targetUUID, "tab.group." + teamName + "-director", "football");
-                  getHelper().playerAddGroup(targetUUID, "director", "global");
+                  getHelper().playerAddPermission(targetUUID, "tab.group." + teamName + "-director");
+                  getHelper().playerAddGroup(targetUUID, "director");
                   getLogger().send("fcfa", Lang.ROSTERS_SET_ROLE.getConfigValue(new String[]{targetName, "MANAGER", teamName.toUpperCase()}));
                 } else {
                   getDataManager().getConfig(type).set(teamName.toUpperCase() + ".manager", null);
                   getDataManager().saveConfig(type);
 
-                  getHelper().playerRemovePermission(targetUUID, "tab.group." + teamName + "-director", "football");
-                  getHelper().playerRemoveGroup(targetUUID, "director", "global");
+                  getHelper().playerRemovePermission(targetUUID, "tab.group." + teamName + "-director");
+                  getHelper().playerRemoveGroup(targetUUID, "director");
                   getLogger().send("fcfa", Lang.ROSTERS_SET_ROLE.getConfigValue(new String[]{targetName, "PLAYER", teamName.toUpperCase()}));
                 }
                 event.getWhoClicked().closeInventory();
@@ -113,7 +113,7 @@ public class PerPlayerGUI extends InventoryGUI {
               .consumer(event -> {
                 getDataManager().setConfig(getTeamData(), type);
                 if (inTeam) {
-                  getHelper().playerRemoveGroup(getGuiManager().getTarget().getUniqueId(), teamName, "football");
+                  getHelper().playerRemoveGroup(getGuiManager().getTarget().getUniqueId(), teamName);
 
                   List<String> players = getDataManager().getConfig(type).getStringList(teamName.toUpperCase() + ".players");
                   players.remove(targetName);
@@ -125,7 +125,7 @@ public class PerPlayerGUI extends InventoryGUI {
                   getDataManager().saveConfig(targetUUID.toString());
                   getLogger().send("fcfa", Lang.ROSTERS_USER_REMOVED.getConfigValue(new String[]{player.getName(), targetName, teamName.toUpperCase()}));
                 } else {
-                  getHelper().playerAddGroup(getGuiManager().getTarget().getUniqueId(), teamName, "football");
+                  getHelper().playerAddGroup(getGuiManager().getTarget().getUniqueId(), teamName);
                   List<String> players = getDataManager().getConfig(type).getStringList(teamName.toUpperCase() + ".players");
                   players.add(targetName);
                   getDataManager().getConfig(type).set(teamName.toUpperCase() + ".players." + targetName, players);

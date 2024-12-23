@@ -60,7 +60,7 @@ public class PlayerJoinListener implements Listener {
       getLogger().info("Adding default league stats entries for player &b" + playerName);
     }
 
-    if (!player.hasPermission("leaguemanager.banned") && getDataManager().getConfig(playerUUID.toString()).get("ban") != null) {
+    if (!player.hasPermission("pleaguemanager.banned") && getDataManager().getConfig(playerUUID.toString()).get("ban") != null) {
       getLogger().info("Removing ban strings from player's &b" + playerName + " &fconfig.");
       getDataManager().getConfig(playerUUID.toString()).set("ban", null);
     }
