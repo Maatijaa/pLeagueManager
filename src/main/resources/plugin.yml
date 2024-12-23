@@ -1,13 +1,14 @@
-name: LeagueManager
+name: pLeagueManager
 version: '${version}'
 api-version: 1.8
-main: io.github.divinerealms.leaguemanager.LeagueManager
-prefix: LeagueManager
-author: Neeonn
+main: me.github.maatijaa.pleaguemanager.LeagueManager
+prefix: pLeagueManager
+author:
+  - Neeonn
+  - Maatijaa
 depend:
   - LuckPerms
 softdepend:
   - HeadDatabase
   - WorldEdit
 description: Plugin for easier league organization.
-website: https://divinerealms.org

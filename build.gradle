@@ -3,8 +3,8 @@ plugins {
     id 'java'
 }
 
-group = 'io.github.divinerealms.leaguemanager'
-version = '1.2.5-SNAPSHOT'
+group = 'me.github.maatijaa.pleaguemanager'
+version = '1.0.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -50,11 +50,11 @@ dependencies {
 }
 
 shadowJar {
-    relocate 'co.aikar.commands', 'io.github.divinerealms.acf'
-    relocate 'co.aikar.locales', 'io.github.divinerealms.locales'
+    relocate 'co.aikar.commands', 'me.github.maatijaa.acf'
+    relocate 'co.aikar.locales', 'me.github.maatijaa.locales'
 }
 
-def targetJavaVersion = 11
+def targetJavaVersion = 8
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
